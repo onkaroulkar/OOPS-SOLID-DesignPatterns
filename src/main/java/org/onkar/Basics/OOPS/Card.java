@@ -1,6 +1,6 @@
 package org.onkar.Basics.OOPS;
 
-public class Card {
+abstract public class Card implements PaymentMethod {
 	
 	private String cardNo;
 	private String userName;
@@ -11,7 +11,7 @@ public class Card {
 		this.userName = userName;
 	}
 
-	public String getCardNo() {
+	 public String getCardNo() {
 		return cardNo;
 	}
 
@@ -26,5 +26,5 @@ public class Card {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
+		
 }
