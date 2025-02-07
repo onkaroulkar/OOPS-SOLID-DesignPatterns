@@ -20,6 +20,5 @@ public class PaymentService {
 		
 		PaymentMethod pm = paymentMethod.get(name);
 		pm.pay(); // Run time polymorphism
-		
 	}
 }

@@ -2,8 +2,8 @@ package org.onkar.Basics.OOPS;
 
 abstract public class Card implements PaymentMethod {
 	
-	private String cardNo;
-	private String userName;
+	protected String cardNo;
+	protected String userName;
 	
 	public Card(String cardNo, String userName) {
 		super();
@@ -26,5 +26,4 @@ abstract public class Card implements PaymentMethod {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-		
 }
