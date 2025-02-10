@@ -5,13 +5,13 @@ interface Command {
 	void execute();
 }
 
-// concrete classed for commands
+// concrete class for commands
 class BoldCommad implements Command {
 
 	private TextEditorII textEditor;
 
-	void BoldCommand(TextEditorII editor) {
-		this.textEditor = editor;
+	public BoldCommad(TextEditorII tx) {
+		this.textEditor = tx;
 	}
 
 	@Override
