@@ -93,5 +93,6 @@ public class ObserverPatternExample {
 		we.attach(dd);
 		we.attach(md);
 		we.setTemperature(23);
+		we.setTemperature(24);
 	}
 }
