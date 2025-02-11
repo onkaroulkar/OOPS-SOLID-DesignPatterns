@@ -6,6 +6,7 @@ public class ClientV1 {
 		BookCollection book1 = new BookCollection();
 		book1.addBook(new Book("Java Book"));
 		book1.addBook(new Book(" Python Book"));
+		
 	}
 
 }
