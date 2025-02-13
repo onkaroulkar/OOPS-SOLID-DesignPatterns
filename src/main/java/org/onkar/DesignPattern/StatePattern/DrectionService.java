@@ -16,7 +16,7 @@ public class DrectionService {
 		this.mode = mode;
 	}
 
-	// Method to calc ETA based upon transportation Mode
+	// Method to calc     ETA based upon transportation Mode
 	public int getETA() {
 		switch (mode) {
 		case WALKING:
