@@ -129,3 +129,111 @@ reduce readability. The key is to strike a balance—allowing for focused respon
 For very small applications or simple utility classes, over-abstracting might lead to unnecessary complexity. The application of SRP should be balanced with the 
 overall complexity and size of the project.
 ====================================================================================================================================================================
+Case Study: A Banking System with Transaction Management
+Scenario
+A bank has an online system where users can:
+- Transfer money
+- Generate transaction reports
+- Send notifications after successful transfers
+Initially, the system was built with a single class handling everything, which led to maintenance challenges.
+
+public class BankService {
+    public void transferFunds(Account sender, Account receiver, double amount) {
+        // Deduct from sender, add to receiver
+        sender.debit(amount);
+        receiver.credit(amount);
+        logTransaction(sender, receiver, amount);
+        sendNotification(sender, receiver, amount);
+    }
+
+    public void logTransaction(Account sender, Account receiver, double amount) {
+        // Log transaction details to the database
+    }
+
+    public void sendNotification(Account sender, Account receiver, double amount) {
+        // Send email or SMS notification
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Problems with this design:
+- Multiple responsibilities in one class (fund transfer, logging, notifications).
+- Changes in notification handling might affect fund transfer logic.
+- Difficult to test transaction behavior separately.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+✔️ Refactored Design (Follows SRP)
+We break the class into three focused components, each with one responsibility.
+// Handles ONLY money transfer logic
+public class TransactionManager {
+    public void transferFunds(Account sender, Account receiver, double amount) {
+        sender.debit(amount);
+        receiver.credit(amount);
+        new TransactionLogger().logTransaction(sender, receiver, amount);
+        new NotificationService().sendNotification(sender, receiver, amount);
+    }
+}
+
+// Handles ONLY transaction logging
+public class TransactionLogger {
+    public void logTransaction(Account sender, Account receiver, double amount) {
+        System.out.println("Logging transaction: " + amount + " from " + sender.getName() + " to " + receiver.getName());
+    }
+}
+
+// Handles ONLY notifications
+public class NotificationService {
+    public void sendNotification(Account sender, Account receiver, double amount) {
+        System.out.println("Notification: " + sender.getName() + " sent " + amount + " to " + receiver.getName());
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+📌 Benefits of Applying SRP
+- Better Maintainability
+- Changes in notification format won't affect money transfer logic.
+- Improved Testability
+- Unit tests can now focus separately on TransactionManager, TransactionLogger, and NotificationService.
+- Scalability & Extensibility
+- New logging methods (like saving to a database) only affect TransactionLogger.
+- Adding a new notification type (e.g., WhatsApp alerts) only affects NotificationService.
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+🏆 Final Thoughts
+By applying SRP:
+- The system becomes modular.
+- Code is easier to debug and extend.
+- Developers can work on separate functionalities without conflicts.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Refactored Design (Follows SRP)
+We break the class into three focused components, each with one responsibility.
+
+// Handles ONLY money transfer logic
+public class TransactionManager {
+    public void transferFunds(Account sender, Account receiver, double amount) {
+        sender.debit(amount);
+        receiver.credit(amount);
+        new TransactionLogger().logTransaction(sender, receiver, amount);
+        new NotificationService().sendNotification(sender, receiver, amount);
+    }
+}
+
+// Handles ONLY transaction logging
+public class TransactionLogger {
+    public void logTransaction(Account sender, Account receiver, double amount) {
+        System.out.println("Logging transaction: " + amount + " from " + sender.getName() + " to " + receiver.getName());
+    }
+}
+
+// Handles ONLY notifications
+public class NotificationService {
+    public void sendNotification(Account sender, Account receiver, double amount) {
+        System.out.println("Notification: " + sender.getName() + " sent " + amount + " to " + receiver.getName());
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Benefits of Applying SRP
+- Better Maintainability
+- Changes in notification format won't affect money transfer logic.
+- Improved Testability
+- Unit tests can now focus separately on TransactionManager, TransactionLogger, and NotificationService.
+- Scalability & Extensibility
+- New logging methods (like saving to a database) only affect TransactionLogger.
+- Adding a new notification type (e.g., WhatsApp alerts) only affects NotificationService.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
