@@ -190,5 +190,117 @@ public class Main {
     }
 }
 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. The Common Abstraction
+Create an interface that serves as the contract for sending notifications
+package com.example.notification;
+
+public interface NotificationService {
+    void send(String message);
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2. Concrete Implementations
+Each notification channel implements the same interface. For example:
+EmailNotificationService.java
+package com.example.notification;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class EmailNotificationService implements NotificationService {
+    @Override
+    public void send(String message) {
+        // Email-specific implementation
+        System.out.println("Sending Email with message: " + message);
+    }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+package com.example.notification;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class SMSNotificationService implements NotificationService {
+    @Override
+    public void send(String message) {
+        // SMS-specific implementation
+        System.out.println("Sending SMS with message: " + message);
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+package com.example.notification;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class PushNotificationService implements NotificationService {
+    @Override
+    public void send(String message) {
+        // Push notification-specific implementation
+        System.out.println("Sending Push notification with message: " + message);
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+The NotificationManager aggregates all available notification services. Spring Boot injects the list of all beans that implement the NotificationService interface,
+ensuring that any channel conforming to the interface is available.
+package com.example.notification;
+
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+@Service
+public class NotificationManager {
+    private final List<NotificationService> notificationServices;
+
+    // Spring Boot injects all NotificationService beans into this list.
+    public NotificationManager(List<NotificationService> notificationServices) {
+        this.notificationServices = notificationServices;
+    }
+    
+    public void notifyAllChannels(String message) {
+        for (NotificationService service : notificationServices) {
+            service.send(message);
+        }
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. Exposing the Service via a REST Controller
+A REST controller provides an endpoint to trigger notifications. The controller depends only on the NotificationManager abstraction.
+package com.example.notification;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/notifications")
+public class NotificationController {
+
+    private final NotificationManager notificationManager;
+
+    public NotificationController(NotificationManager notificationManager) {
+        this.notificationManager = notificationManager;
+    }
+
+    @PostMapping
+    public ResponseEntity<String> sendNotification(@RequestParam String message) {
+        notificationManager.notifyAllChannels(message);
+        return ResponseEntity.ok("Notifications sent successfully.");
+    }
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+5. The Main Application Class
+Finally, create the Spring Boot application class to bootstrap the microservice:
+package com.example.notification;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class NotificationServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(NotificationServiceApplication.class, args);
+    }
+}
 =====================================================================================================================================================================
 
